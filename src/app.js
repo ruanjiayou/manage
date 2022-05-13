@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const path = require('path');
 const Koa = require('koa');
 const Convert = require('koa-convert');
@@ -8,19 +9,30 @@ const config = require('./config/index');
 const router = require('./router');
 const mongoInit = require('./models/mongo');
 const BLLinit = require('./BLL/index');
+const bizError = require('./middleware/bizError');
+const { BizError, genByBiz } = require('./utils/bizError')
 
 const app = new Koa();
 
-app.response.success = function (data, code = 0, message = '') {
-  this.body = {
-    data,
-    code,
-    message: ''
+app.response.success = function (data, params = {}) {
+  const { status = 200, code = 0, message = '' } = params;
+  const body = { code, message };
+  if (!_.isNil(data)) {
+    body.data = data;
   }
+  this.status = status
+  this.body = body;
 }
+app.response.throwBiz = function (bizName, params) {
+  throw new BizError(bizName, params);
+}
+
 // 加载model和业务逻辑层
+app.config = config;
 app.models = mongoInit(config.mongo);
 app.BLL = BLLinit(app.models);
+
+app.use(bizError)
 
 app.use(Cors());
 
@@ -30,8 +42,10 @@ app.use(Convert(Static(path.join(__dirname, '../static'))))
 
 app.use(async (ctx, next) => {
   console.log(ctx.request.method, ctx.request.path)
-  ctx.models = ctx.app.models
-  ctx.BLL = ctx.app.BLL
+  ctx.models = app.models
+  ctx.BLL = app.BLL
+  ctx.config = app.config;
+
   await next()
 });
 

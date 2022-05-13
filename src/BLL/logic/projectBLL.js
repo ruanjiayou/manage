@@ -1,4 +1,4 @@
-const BaseBLL = require('./base');
+const BaseBLL = require('../base');
 
 class Project extends BaseBLL {
   constructor(models, model_name) {
