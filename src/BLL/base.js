@@ -94,9 +94,7 @@ class BaseBLL {
   getAttributes() {
 
   }
-  upsert(filter, data) {
-    return this.model.updateOne(filter, { $set: data }, { upsert: true, new: true });
-  }
+  
   create(data) {
     Object.assign(data, this.params);
     return this.model.create(data);

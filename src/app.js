@@ -11,6 +11,7 @@ const mongoInit = require('./models/mongo');
 const BLLinit = require('./BLL/index');
 const bizError = require('./middleware/bizError');
 const { BizError, genByBiz } = require('./utils/bizError')
+const loadSchedule = require('./schedule/index')
 
 const app = new Koa();
 
@@ -31,6 +32,7 @@ app.response.throwBiz = function (bizName, params) {
 app.config = config;
 app.models = mongoInit(config.mongo);
 app.BLL = BLLinit(app.models);
+app.schedule = loadSchedule(app);
 
 app.use(bizError)
 
