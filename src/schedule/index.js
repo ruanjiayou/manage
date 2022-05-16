@@ -1,6 +1,7 @@
 const schedule = require('node-schedule');
 const testJob = require('./jobs/test')
 const pneumoniaJob = require('./jobs/pneumonia')
+const stockJob = require('./jobs/stock')
 
 module.exports = function (app) {
   const schedules = {
@@ -24,5 +25,6 @@ module.exports = function (app) {
   }
   schedules.createJob(testJob);
   schedules.createJob(pneumoniaJob);
+  schedules.createJob(stockJob);
   return schedules;
 }
