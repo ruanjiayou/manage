@@ -6,6 +6,12 @@ const schema = new Schema({
   _id: {
     type: String,
   },
+  se: {
+    type: String,
+  },
+  code: {
+    type: String,
+  },
   name: {
     type: String,
   },

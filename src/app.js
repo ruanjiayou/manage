@@ -6,6 +6,7 @@ const Static = require('koa-static');
 const Cors = require('koa2-cors');
 const bodyParser = require('koa-bodyparser');
 const config = require('./config/index');
+const constant = require('./constant');
 const router = require('./router');
 const mongoInit = require('./models/mongo');
 const BLLinit = require('./BLL/index');
@@ -26,6 +27,15 @@ app.response.success = function (data, params = {}) {
 }
 app.response.throwBiz = function (bizName, params) {
   throw new BizError(bizName, params);
+}
+
+app.request.paging = function () {
+  const qs = app.request.query, hql = {};
+  let page = parseInt(qs[constant.SYSTEM.REQ_PAGE]) || 1;
+  let limit = parseInt(qs[constant.SYSTEM.REQ_LIMIT]) || 20;
+  hql.page = Math.max(page, 1);
+  hql.limit = Math.min(limit, 20);
+  return hql;
 }
 
 // 加载model和业务逻辑层

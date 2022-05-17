@@ -38,4 +38,8 @@ module.exports = {
     '2022-10-06',
     '2022-10-07',
   ],
+  SYSTEM: {
+    REQ_PAGE: 'page',
+    REQ_LIMIT: 'size'
+  }
 }
