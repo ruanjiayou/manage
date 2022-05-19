@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Router = require('koa-router')
+const uuid = require('uuid')
 
 const stock = new Router({
   prefix: '',
@@ -17,6 +18,7 @@ stock.post('/', async ({ request, app, response }) => {
   data.total = 0;
   data.createdAt = new Date();
   data.updatedAt = new Date();
+  data._id = uuid.v4();
   await app.BLL.stockBLL.update({ where: { se: data.se, code: data.code }, data: { $setOnInsert: data }, options: { upsert: true } });
   response.success();
 });
