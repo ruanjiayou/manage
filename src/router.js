@@ -1,6 +1,6 @@
 const path = require('path')
 const Router = require('koa-router')
-const router = new Router();
+const router = new Router({ prefix: '/api' });
 const loader = require('./utils/loader');
 
 const routeDir = path.join(__dirname, 'routes')
