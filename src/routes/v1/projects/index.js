@@ -11,10 +11,9 @@ project.get('/', async ({ BLL, response }) => {
   response.success({ items });
 })
 
-project.get('/:_id', async ({ params, req, response }) => {
-  const { projectBLL } = ctx.BLL;
-  const where = { _id: params._id };
-  const item = await projectBLL.getInfo({ where });
+project.get('/:id', async ({ params, req, BLL, response }) => {
+  const where = { _id: params.id };
+  const item = await BLL.projectBLL.getInfo({ where });
   response.success({ item });
 })
 
@@ -25,8 +24,8 @@ project.post('/', async ({ request, response, BLL }) => {
   response.success({ item });
 });
 
-project.put('/:_id', async ({ params, request, response, BLL }) => {
-  const where = { _id: params._id };
+project.put('/:id', async ({ params, request, response, BLL }) => {
+  const where = { _id: params.id };
   const data = _.pick(request.body, ['title', 'desc', 'cover']);
   const item = await BLL.projectBLL.update(where, { $set: data });
   response.success();

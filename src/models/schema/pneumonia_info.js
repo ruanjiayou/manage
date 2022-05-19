@@ -15,6 +15,10 @@ const schema = new Schema({
   createdAt: {
     type: Date,
     default: () => dayjs().toDate(),
+  },
+  updatedAt: {
+    type: Date,
+    default: () => dayjs().toDate(),
   }
 }, {
   strict: true,

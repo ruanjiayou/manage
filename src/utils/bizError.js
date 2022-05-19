@@ -18,11 +18,18 @@ class BizError extends Error {
  */
 function genByBiz(bizError, lang = 'zh-CH') {
   const result = _.get(packages, bizError.bizName, { status: 200, code: -1, message: 'unknow' });
+  let message = result.message;
+  if (bizError.params) {
+    const keys = Object.keys(bizError.params);
+    keys.forEach(key => {
+      message = _.replace(message, `{${key}}`, bizError.params[key])
+    })
+  }
   return {
     status: result.status,
     data: {
       code: result.code,
-      message: result.message,
+      message: message,
     }
   }
 }

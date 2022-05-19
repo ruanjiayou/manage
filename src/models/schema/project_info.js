@@ -4,7 +4,7 @@ const schema = new Schema({
   _id: {
     type: String,
   },
-  title: {
+  name: {
     type: String,
   },
   cover: {

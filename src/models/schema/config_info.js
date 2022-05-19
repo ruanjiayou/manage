@@ -1,30 +1,43 @@
 const Schema = require('mongoose').Schema;
 const constant = require('../../constant');
-const dayjs = require('dayjs')
+const dayjs = require('dayjs');
 
 const schema = new Schema({
   _id: {
     type: String,
   },
+  project_id: {
+    type: String,
+    default: ''
+  },
   name: {
     type: String,
+  },
+  desc: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
+  value: {
+    type: Object,
+    default: {},
   },
   createdAt: {
     type: Date,
     default: () => dayjs().toDate(),
   },
-  total: {
-    type: Number,
-    default: 0
+  updatedAt: {
+    type: Date,
+    default: () => dayjs().toDate(),
   },
-  status: {
+  order: {
     type: Number,
-    default: 1,
-    enum: Object.values(constant.JOB_STATUS),
-  },
+    default: 1
+  }
 }, {
   strict: true,
-  collections: 'job_info',
+  collections: 'config_info',
 });
 
 class Custom {

@@ -12,7 +12,7 @@ module.exports = function (app) {
     },
     createJob(job) {
       this.tasks[job.name] = job;
-      this.jobs[job.name] = schedule.scheduleJob(job.rule, function (date) {
+      this.jobs[job.name] = schedule.scheduleJob({rule: job.rule, tz: 'Asia/Shanghai'}, function (date) {
         job.tick && job.tick(date, app);
       })
     },

@@ -31,6 +31,10 @@ const schema = new Schema({
     type: Number,
     default: 0
   },
+  rzrq: {
+    type: Boolean,
+    default: false,
+  }
 }, {
   strict: true,
   collections: 'stock_info',

@@ -20,6 +20,10 @@ const schema = new Schema({
     type: String,
     default: '',
   },
+  project_id: {
+    type: String,
+    default: ''
+  },
   tree_id: {
     type: String,
     default: '',

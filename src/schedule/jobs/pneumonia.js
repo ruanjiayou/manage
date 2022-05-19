@@ -27,10 +27,11 @@ module.exports = {
         if (result.errno === 0) {
           const at = result.data.pneumonia.upate_time;
           const date = at.split(' ')[0];
+          const updatedAt = dayjs().toDate()
           await jobBLL.update({ where: { _id }, data: { $set: { status: constant.JOB_STATUS.SUCCESS, duration } } });
           await pneumoniaBLL.update({
             where: { date },
-            data: { $set: { data: result.data.pneumonia }, $setOnInsert: { _id: uuid.v4() } },
+            data: { $set: { data: result.data.pneumonia, updatedAt }, $setOnInsert: { _id: uuid.v4() } },
             options: { upsert: true }
           });
           return;

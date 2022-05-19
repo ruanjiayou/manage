@@ -1,3 +1,6 @@
+const path = require('path')
+const root_path = process.cwd()
+
 module.exports = {
   JOB_STATUS: {
     PENDDING: 1,
@@ -41,5 +44,11 @@ module.exports = {
   SYSTEM: {
     REQ_PAGE: 'page',
     REQ_LIMIT: 'size'
+  },
+  PATH: {
+    ROOT: root_path,
+    SRC: path.join(root_path, 'src'),
+    STATIC: path.join(root_path, 'static'),
+    TEMPLATE: path.join(root_path, 'src/templates')
   }
 }

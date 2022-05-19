@@ -13,7 +13,7 @@ stock.get('/', async (ctx) => {
 })
 
 stock.post('/', async ({ request, app, response }) => {
-  const data = _.pick(request.body, ['se', 'code', 'name']);
+  const data = _.pick(request.body, ['se', 'code', 'name', 'rzrq']);
   data.price = 0;
   data.total = 0;
   data.createdAt = new Date();
@@ -22,5 +22,12 @@ stock.post('/', async ({ request, app, response }) => {
   await app.BLL.stockBLL.update({ where: { se: data.se, code: data.code }, data: { $setOnInsert: data }, options: { upsert: true } });
   response.success();
 });
+
+stock.put('/:id', async ({ request, params, app, response }) => {
+  const data = _.pick(request.body, ['se', 'code', 'name', 'rzrq', 'total', 'price']);
+  data.updatedAt = new Date();
+  await app.BLL.stockBLL.update({ where: { _id: params.id }, data: { $set: data } })
+  response.success();
+})
 
 module.exports = stock
