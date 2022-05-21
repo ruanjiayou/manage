@@ -4,7 +4,7 @@ const dayjs = require('dayjs')
 
 module.exports = {
   name: 'stock',
-  rule: '0 0 */16 * * 1-5',
+  rule: '0 0 16 * * 1-5',
   async tick(date, app) {
     const d = dayjs(date).format('YYYY-MM-DD')
     const { stockBLL, klineBLL } = app.BLL;
