@@ -1,7 +1,9 @@
+const dayjs = require('../../utils/dayjs')
+
 module.exports = {
   name: 'test',
-  rule: '0 0 */1 * * *',
+  rule: '0 */10 * * * *',
   tick(date, app) {
-    console.log(this.name, date);
+    console.log(this.name, dayjs.utc(date).tz('Asia/Shanghai').format());
   },
 }

@@ -1,7 +1,7 @@
 const constant = require('../../constant');
+const dayjs = require('../../utils/dayjs')
 const fetch = require('node-fetch');
 const uuid = require('uuid');
-const dayjs = require('dayjs');
 
 module.exports = {
   name: 'pneumonia',

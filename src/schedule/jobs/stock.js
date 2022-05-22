@@ -1,6 +1,6 @@
 const constant = require('../../constant')
 const stockHelper = require('../../utils/stockHelper')
-const dayjs = require('dayjs')
+const dayjs = require('../../utils/dayjs')
 
 module.exports = {
   name: 'stock',

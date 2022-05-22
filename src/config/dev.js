@@ -1,6 +1,6 @@
 module.exports = {
   PORT: 3334,
-  timezone: '+08:00',
+  timezone: 'Asia/Shanghai',
   language: 'zh-CN',
   mongo: {
     host: '127.0.0.1',
