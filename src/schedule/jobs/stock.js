@@ -1,3 +1,4 @@
+const config = require('../../config/index')
 const constant = require('../../constant')
 const stockHelper = require('../../utils/stockHelper')
 const dayjs = require('../../utils/dayjs')
@@ -6,11 +7,11 @@ module.exports = {
   name: 'stock',
   rule: '0 0 16 * * 1-5',
   async tick(date, app) {
-    const d = dayjs(date).format('YYYY-MM-DD')
+    const d = dayjs.utc(date).tz(config.timezone).format('YYYY-MM-DD')
     const { stockBLL, klineBLL } = app.BLL;
     if (!constant.HOLIDAY.includes(d)) {
       // holiday
-      console.log(this.name, date);
+      console.log(this.name, dayjs.utc(date).tz(config.timezone));
       const items = await stockBLL.getAll({ lean: true, attrs: { se: 1, code: 1, } })
       for (let i = 0; i < items.length; i++) {
         const stock = items[i]

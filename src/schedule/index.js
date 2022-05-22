@@ -23,7 +23,7 @@ module.exports = function (app) {
       }
     }
   }
-  schedules.createJob(testJob);
+  // schedules.createJob(testJob);
   schedules.createJob(pneumoniaJob);
   schedules.createJob(stockJob);
   return schedules;

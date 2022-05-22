@@ -2,8 +2,8 @@ const dayjs = require('../../utils/dayjs')
 
 module.exports = {
   name: 'test',
-  rule: '0 */10 * * * *',
+  rule: '*/5 * * * * *',
   tick(date, app) {
-    console.log(this.name, dayjs.utc(date).tz('Asia/Shanghai').format());
+    console.log(this.name, dayjs.utc().tz('Asia/Shanghai').format());
   },
 }
