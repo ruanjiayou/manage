@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
+const constant = require('../constant')
 
 class EmailHelper {
   /**
@@ -8,9 +9,10 @@ class EmailHelper {
    * @param {object} cfg 参数有host/port/user/pass
    */
   constructor(cfg) {
-    this.config = cfg;
+    this.config = cfg.value;
     // 开启一个SMTP连接池
     this.transport = nodemailer.createTransport(smtpTransport({
+      service: this.config.service,
       secure: true,// 使用SSL
       secureConnection: true,// 使用SSL
       host: this.config.host,
@@ -21,11 +23,10 @@ class EmailHelper {
       }
     }));
   }
-  render(filename, data) {
-    //TODO: 模板渲染_
-    return '';
+  async render(filename, data = {}) {
+    return await ejs.renderFile(path.join(constant.PATH.SRC, `templates/email/${filename}`), data)
   }
-  async sendMail(users, subject, html) {
+  async sendMail(users, subject, html, attachments = []) {
     // 设置邮件内容
     const options = {
       from: `${this.config.name} <${this.config.user}>`,
@@ -36,7 +37,8 @@ class EmailHelper {
       let user = users[i];
       // 发送邮件
       await this.transport.sendMail(_.extend(options, {
-        to: `${user.name} <${user.email}>`
+        to: `${user.name} <${user.email}>`,
+        attachments,
       }), function (error, res) {
         if (error) {
           console.log(error);
