@@ -11,7 +11,7 @@ module.exports = {
     const { stockBLL, klineBLL } = app.BLL;
     if (!constant.HOLIDAY.includes(d)) {
       // holiday
-      console.log(this.name, dayjs.utc(date).tz(config.timezone));
+      console.log(this.name, dayjs.utc(date).tz(config.timezone).toDate());
       const items = await stockBLL.getAll({ lean: true, attrs: { se: 1, code: 1, } })
       for (let i = 0; i < items.length; i++) {
         const stock = items[i]
@@ -21,7 +21,7 @@ module.exports = {
           const { line, ...other } = data
           if (data.amount !== 0) {
             // 停牌判断
-            await stockBLL.update({ where: { code: stock.code, se: stock.se }, data: { $set: { price: data.end } } });
+            await stockBLL.update({ where: { code: stock.code, se: stock.se }, data: { $set: { price: data.end, updatedAt: dayjs().tz(config.timezone).toDate() } } });
           }
           await klineBLL.update({ where: { code: stock.code, se: stock.se, date: stock.date }, data: { $setOnInsert: data }, options: { upsert: true } })
         }

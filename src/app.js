@@ -42,7 +42,6 @@ app.request.paging = function () {
 app.config = config;
 app.models = mongoInit(config.mongo);
 app.BLL = BLLinit(app.models);
-app.schedule = loadSchedule(app);
 
 app.use(bizError)
 
@@ -68,4 +67,21 @@ app.on('error', (err, ctx) => {
 })
 
 
-module.exports = app;
+module.exports = {
+  app,
+  run: async function (cb) {
+    // 连接数据库后,启动前加载配置
+    const config_items = await app.BLL.configBLL.getAll({ lean: true })
+    config_items.forEach(item => {
+      if (app.config[item.name]) {
+        console.warn(`config ${item.name} covered`);
+      }
+      app.config[item.name] = item.value;
+    })
+    app.schedule = await loadSchedule(app);
+    if (typeof cb === 'function') {
+      await cb(app);
+    }
+    return app;
+  }
+};

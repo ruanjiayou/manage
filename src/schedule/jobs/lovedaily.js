@@ -40,11 +40,11 @@ module.exports = {
   async tick(date, app) {
     const d = dayjs.utc(date).tz('Asia/Shanghai')
     console.log(this.name, d.format());
-    const config = await app.BLL.configBLL.getInfo({ where: { name: 'email' } });
-    const config2 = await app.BLL.configBLL.getInfo({ where: { name: 'lovedaily' } });
-    if (config2) {
+    const config = await app.config['email'];
+    const config2 = await app.config['lovedaily'];
+    if (config, config2) {
       const sentence = await getSentence();
-      const weather = await getWhether(config2.value.location_id, config2.value.key)
+      const weather = await getWhether(config2.location_id, config2.key)
       const url = await getWallpaper();
       const mailer = new Mailer(config)
       const attachments = [];
@@ -57,7 +57,7 @@ module.exports = {
         url,
         date: `<h3 style="color: #ffd400;" >今天是 ${d.format('YYYY-MM-DD')}</h3>`
       })
-      mailer.sendMail([{ name: 'Sophsis', email: '2240844515@qq.com' }], 'demo from max', html, attachments)
+      mailer.sendMail([{ name: config2.user_name, email: config2.user_email }], config2.title, html, attachments)
     } else {
       console.log('lovedaily config miss')
     }

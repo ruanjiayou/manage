@@ -1,6 +1,8 @@
 const config = require('./config/index');
-const app = require('./app')
+const { run } = require('./app')
 
-app.listen(config.PORT, () => {
-  console.log(`app listening at: ${config.PORT}`);
+run(async (app) => {
+  app.listen(config.PORT, () => {
+    console.log(`app listening at: ${config.PORT}`);
+  })
 })
