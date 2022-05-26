@@ -6,6 +6,8 @@ const Static = require('koa-static');
 const Cors = require('koa2-cors');
 const bodyParser = require('koa-bodyparser');
 const config = require('./config/index');
+const log4js = require('log4js');
+const logger = require('./utils/logger')('access');
 const constant = require('./constant');
 const router = require('./router');
 const mongoInit = require('./models/mongo');
@@ -44,6 +46,12 @@ app.models = mongoInit(config.mongo);
 app.BLL = BLLinit(app.models);
 
 app.use(bizError)
+
+const fn = log4js.connectLogger(logger);
+app.use(async (ctx, next) => {
+  fn(ctx.req, ctx.res, () => { });
+  await next();
+});
 
 app.use(Cors());
 
