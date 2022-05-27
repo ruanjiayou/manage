@@ -15,6 +15,15 @@ schedule.get('/', async ({ app, response }) => {
   response.success({ items, ended: true });
 });
 
+schedule.get('/:name/data', async ({ params, app, response }) => {
+  const { pneumoniaBLL } = app.BLL;
+  const { page, limit } = app.paging();
+  if (params.name === 'pneumonia') {
+    const items = await pneumoniaBLL.getList({ page, limit, order: { createdAt: -1 }, lean: true })
+    response.success({ items: items.reverse().map(item => ({ date: item.data.upate_time.split(' ')[0], country: item.data.country, world: item.data.world })) });
+  }
+});
+
 schedule.patch('/:name', async ({ params, app, response }) => {
   await app.schedule.tick(params.name);
   response.success();

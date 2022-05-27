@@ -34,39 +34,17 @@
         return value;
       }
     }
-    fetch('/api/v1/stocks').then(resp => resp.json()).then(body => {
-      const select = document.querySelector('select[name=stock]');
-      if (select) {
-        select.addEventListener('change', function (e) {
-          var obj = e.target;
-          var index = obj.selectedIndex; //序号，取当前选中选项的序号
-          var val = obj.options[index].value;
-          loadStock(val)
-        })
-      }
-      body.data.items.forEach((item, index) => {
-        const option = document.createElement('option')
-        option.value = item.code;
-        option.innerText = item.name;
-        select.append(option)
-        if (index === 0) {
-          option.selected = true
-          loadStock(item.code)
-        }
-      });
-    })
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
-    var colors = { money: '#ff0000', stock: '#00ff37', price: '#ffa500', rate: '#0095ff' };
-
-    function loadStock(code) {
-      console.log(code)
-      fetch(`/api/v1/stocks/${code}/rzrq?size=365`)
+    var colors = { died: '#ff0000', cured: '#00ff37', icu: '#ffa500', confirmed: '#0095ff', curLocalConfirm: '#00ccff' };
+    load();
+    function load() {
+      fetch(`/api/v1/schedules/pneumonia/data`)
         .then(response => response.json())
         .then(result => {
           var option = {
             title: {
-              text: '数据分析'
+              text: '新冠统计'
             },
             tooltip: {
               trigger: 'axis',
@@ -75,16 +53,13 @@
                 params.forEach(param => {
                   let name = '', value = param.value;
                   if (param.seriesIndex === 0) {
-                    name = 'money';
-                    value = formatMoney(value);
+                    name = 'died';
                   } else if (param.seriesIndex === 1) {
-                    name = 'stock';
-                    value = formatMoney(value);
+                    name = 'cured';
                   } else if (param.seriesIndex === 2) {
-                    name = 'price';
+                    name = 'confirmed';
                   } else if (param.seriesIndex === 3) {
-                    name = 'rate';
-                    value += '%'
+                    name = 'curLocalConfirm';
                   }
                   str += `<div><span class="dot" style="background-color:${colors[name]}"></span>${param.seriesName}: ${value}</div>`
                 })
@@ -93,10 +68,10 @@
             },
             legend: {
               data: [
-                { name: '融资', lineStyle: { color: colors.money }, itemStyle: { color: colors.money } },
-                { name: '融券', lineStyle: { color: colors.stock } },
-                { name: '股价', lineStyle: { color: colors.price } },
-                { name: '换手', lineStyle: { color: colors.rate, width: 1 } },
+                { name: '累计死亡', lineStyle: { color: colors.died }, itemStyle: { color: colors.died } },
+                { name: '累计治愈', lineStyle: { color: colors.cured } },
+                { name: '累计确诊', lineStyle: { color: colors.confirmed } },
+                { name: '现有确诊', lineStyle: { color: colors.curLocalConfirm, width: 1 } },
               ]
             },
             grid: {
@@ -115,81 +90,58 @@
               boundaryGap: false,
               data: []
             },
-            yAxis: [
-              {
-                type: 'value',
-                name: '金额',
-                axisLine: {
-                  show: true,
-                  lineStyle: {
-                    color: colors.money
-                  }
-                },
-                axisLabel: {
-                  formatter: formatMoney
-                }
-              }, {
-                type: 'value',
-                name: '价格',
-                axisLine: {
-                  show: true,
-                  lineStyle: {
-                    color: colors.price
-                  }
-                },
-              }, {
-                type: 'value',
-                name: '%',
-                axisLine: {
-                  show: true,
-                  lineStyle: {
-                    color: colors.rate
-                  }
-                },
-                offset: 30,
-                axisLabel: {
-                  formatter: '{value}%'
-                }
+            yAxis: [{
+              type: 'value',
+              name: '人数',
+              axisLine: {
+                show: true,
               },
+            }, {
+              type: 'value',
+              name: '人数',
+              axisLine: {
+                show: true,
+              },
+            }
             ],
             series: [
               {
-                name: '融资',
+                name: '累计死亡',
                 type: 'line',
                 yAxisIndex: 0,
                 // stack: 'Total',
                 data: []
               },
               {
-                name: '融券',
+                name: '累计治愈',
                 type: 'line',
                 yAxisIndex: 0,
                 // stack: 'Total',
                 lineStyle: {
-                  color: colors.stock
+                  color: colors.cured
                 },
                 label: {
-                  color: colors.stock
+                  color: colors.cured
                 },
                 data: []
               },
               {
-                name: '股价',
+                name: '累计确诊',
                 type: 'line',
                 yAxisIndex: 1,
                 // stack: 'Total',
                 lineStyle: {
-                  color: colors.price
+                  color: colors.confirmed
                 },
                 data: []
               },
               {
-                name: '换手',
-                type: 'bar',
-                yAxisIndex: 2,
+                name: '当前确诊',
+                type: 'line',
+                yAxisIndex: 1,
                 // stack: 'Total',
                 lineStyle: {
-                  color: colors.rate
+                  color: colors.curLocalConfirm
                 },
                 smooth: true,
                 data: []
@@ -197,12 +149,12 @@
             ]
           };
           option.xAxis.data = result.data.items.map(item => item.date);
-          option.series[0].data = result.data.items.map(item => item.money);
-          option.series[1].data = result.data.items.map(item => item.stock);
-          option.series[2].data = result.data.items.map(item => item.end);
-          option.series[3].data = result.data.items.map(item => item.turnover_rate);
+          option.series[0].data = result.data.items.map(item => item.country.died);
+          option.series[1].data = result.data.items.map(item => item.country.cured);
+          option.series[2].data = result.data.items.map(item => item.country.confirmed);
+          option.series[3].data = result.data.items.map(item => item.country.curLocalConfirm);
           // 绘制图表
-          myChart.setOption(option, true);
+          myChart.setOption(option);
         })
         .catch(error => console.log('error', error));
 

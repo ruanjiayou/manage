@@ -16,8 +16,9 @@ class BizError extends Error {
  * @param {String} lang 语言.默认zh-CN
  * @returns 
  */
-function genByBiz(bizError, lang = 'zh-CH') {
-  const result = _.get(packages, bizError.bizName, { status: 200, code: -1, message: 'unknow' });
+function genByBiz(bizError, lang = 'zh-CN') {
+  const package = packages[lang] ? packages[lang] : packages['zh-CN'];
+  const result = _.get(package, bizError.bizName, { status: 200, code: -1, message: 'unknow' });
   let message = result.message;
   if (bizError.params) {
     const keys = Object.keys(bizError.params);
@@ -37,9 +38,18 @@ function genByBiz(bizError, lang = 'zh-CH') {
 // 业务错误语音包
 const packages = {};
 loader({ dir: path.join(__dirname, '../config/error-codes') }, (info) => {
-  const name = info.filename.toUpperCase();
-  const data = require(info.fullpath);
-  packages[name] = data;
+  if (info.ext === '') {
+    const lang = info.filename
+    const package = {};
+    loader({ dir: path.join(info.dir, info.filename) }, (detail) => {
+      if (detail.ext) {
+        const name = detail.filename.toUpperCase();
+        const data = require(detail.fullpath);
+        package[name] = data;
+      }
+    });
+    packages[lang] = package;
+  }
 })
 
 module.exports = {
