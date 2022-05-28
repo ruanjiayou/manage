@@ -36,7 +36,7 @@ async function getWallpaper() {
 
 module.exports = {
   name: 'lovedaily',
-  rule: '0 0 22 * * *',
+  rule: '0 0 8 * * *',
   async tick(date, app) {
     const d = dayjs.utc(date).tz('Asia/Shanghai')
     console.log(this.name, d.format());
@@ -46,6 +46,7 @@ module.exports = {
       const sentence = await getSentence();
       const weather = await getWhether(config2.location_id, config2.key)
       const url = await getWallpaper();
+      const days = (dayjs().startOf('day').tz('Asia/Shanghai').toDate().getTime() - dayjs(config2.value.cp_time).tz('Asia/Shanghai').toDate().getTime()) / (1000 * 60 * 60 * 24) + 1
       const mailer = new Mailer(config)
       const attachments = [];
       if (url) {
@@ -55,7 +56,8 @@ module.exports = {
         sentence,
         weather,
         url,
-        date: `<h3 style="color: #ffd400;" >今天是 ${d.format('YYYY-MM-DD')}</h3>`
+        days,
+        date: d.format('YYYY-MM-DD')
       })
       mailer.sendMail([{ name: config2.user_name, email: config2.user_email }], config2.title, html, attachments)
     } else {

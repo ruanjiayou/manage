@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "NODE_ENV=prod node ./src/server.js",
-    "dev": "NODE_ENV=dev nodemon ./src/server.js",
+    "dev": "cross-env NODE_ENV=dev nodemon ./src/server.js",
     "build": "rm -rf ./dist/* && tsc",
     "test": "NODE_ENV=test jest",
     "auto-deploy": "git pull && docker-compose restart"
@@ -34,6 +34,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "jest": "^28.1.0",
     "nodemon": "^2.0.16",
     "supertest": "^6.2.3"
