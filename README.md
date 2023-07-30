@@ -1,5 +1,5 @@
 # manage
-
+> 移动到CMS里了
 ## TODO
 -  ✅ npm run dev
 -  ✅ get / route
